@@ -1,0 +1,31 @@
+{
+  "target_family": "Xilinx 7-series / Artix-7",
+  "stage": "synthesis_only",
+  "cores": {
+    "pipeline": {
+      "num_cells": 141,
+      "cells_by_type": {
+        "CARRY4": 15,
+        "DSP48E1": 8,
+        "FDRE": 59,
+        "LUT2": 54,
+        "LUT3": 1,
+        "LUT4": 4
+      }
+    },
+    "serial": {
+      "num_cells": 211,
+      "cells_by_type": {
+        "CARRY4": 1,
+        "DSP48E1": 1,
+        "FDRE": 152,
+        "INV": 1,
+        "LUT2": 3,
+        "LUT3": 16,
+        "LUT4": 2,
+        "LUT5": 2,
+        "LUT6": 33
+      }
+    }
+  }
+}

@@ -1,0 +1,45 @@
+{
+   "creator": "Yosys 0.33 (git sha1 2584903a060)",
+   "invocation": "stat -json ",
+   "modules": {
+      "\\icebreaker_top": {
+         "num_wires":         609,
+         "num_wire_bits":     2975,
+         "num_pub_wires":     609,
+         "num_pub_wire_bits": 2975,
+         "num_memories":      0,
+         "num_memory_bits":   0,
+         "num_processes":     0,
+         "num_cells":         1645,
+         "num_cells_by_type": {
+            "SB_CARRY": 136,
+            "SB_DFF": 149,
+            "SB_DFFE": 128,
+            "SB_DFFESR": 21,
+            "SB_DFFSR": 3,
+            "SB_LUT4": 1200,
+            "SB_MAC16": 8
+         }
+      }
+   },
+      "design": {
+         "num_wires":         609,
+         "num_wire_bits":     2975,
+         "num_pub_wires":     609,
+         "num_pub_wire_bits": 2975,
+         "num_memories":      0,
+         "num_memory_bits":   0,
+         "num_processes":     0,
+         "num_cells":         1645,
+         "num_cells_by_type": {
+            "SB_CARRY": 136,
+            "SB_DFF": 149,
+            "SB_DFFE": 128,
+            "SB_DFFESR": 21,
+            "SB_DFFSR": 3,
+            "SB_LUT4": 1200,
+            "SB_MAC16": 8
+         }
+      }
+}
+

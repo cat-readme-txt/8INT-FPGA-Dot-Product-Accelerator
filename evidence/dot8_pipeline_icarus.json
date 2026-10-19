@@ -1,0 +1,56 @@
+{
+  "core": "pipeline",
+  "tests": [
+    {
+      "name": "directed_signed_arithmetic",
+      "passed": true,
+      "cycles": 41,
+      "accepted": 22,
+      "retired": 22,
+      "reset_flushed": 0,
+      "output_stall_cycles": 0,
+      "input_blocked_cycles": 0,
+      "vector_count": 22
+    },
+    {
+      "name": "randomized_backpressure",
+      "passed": true,
+      "cycles": 23498,
+      "accepted": 12288,
+      "retired": 12288,
+      "reset_flushed": 0,
+      "output_stall_cycles": 8758,
+      "input_blocked_cycles": 7873,
+      "seeds": [
+        42,
+        2026,
+        8675309
+      ],
+      "vector_count": 12288
+    },
+    {
+      "name": "reset_discards_inflight_transactions",
+      "passed": true,
+      "cycles": 1035,
+      "accepted": 514,
+      "retired": 512,
+      "reset_flushed": 2,
+      "output_stall_cycles": 357,
+      "input_blocked_cycles": 306
+    },
+    {
+      "name": "sustained_throughput_and_latency",
+      "passed": true,
+      "cycles": 1043,
+      "accepted": 1024,
+      "retired": 1024,
+      "reset_flushed": 0,
+      "output_stall_cycles": 0,
+      "input_blocked_cycles": 0,
+      "vector_count": 1024,
+      "initiation_interval_cycles": 1,
+      "transfer_latency_cycles": 4,
+      "sustained_results_per_cycle": 1.0
+    }
+  ]
+}

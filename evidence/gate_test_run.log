@@ -1,0 +1,18 @@
+Generated 64 deterministic ROM vectors and exact expected results.
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:93   in _embed_init_python              Using Python 3.12.4 interpreter at /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:79   in gpi_print_registered_impl       VPI registered
+     0.00ns INFO     cocotb                             Running on Icarus Verilog version 12.0 (stable)
+     0.00ns INFO     cocotb                             Seeding Python random module with supplied seed 20261018
+     0.00ns INFO     cocotb                             Initialized cocotb v2.0.0 from /root/.local/lib/python3.12/site-packages/cocotb
+     0.00ns INFO     cocotb.regression                  pytest not found, install it to enable better AssertionError messages
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_board.startup_and_button_restart (1/1)
+ 18060.00ns INFO     cocotb.regression                  test_board.startup_and_button_restart passed
+ 18060.00ns INFO     cocotb.regression                  ***********************************************************************************************
+                                                        ** TEST                                   STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        ***********************************************************************************************
+                                                        ** test_board.startup_and_button_restart   PASS       18060.00           1.85       9755.19  **
+                                                        ***********************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0                       18060.00           1.85       9749.32  **
+                                                        ***********************************************************************************************
+PASS: icebreaker_top (gate-board): 1 tests; metrics: build/reports/icebreaker_post_synthesis_icarus.json

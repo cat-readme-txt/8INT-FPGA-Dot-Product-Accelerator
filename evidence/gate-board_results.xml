@@ -1,0 +1,6 @@
+<testsuites name="results">
+  <testsuite name="all" package="all">
+    <property name="random_seed" value="20261018" />
+    <testcase name="startup_and_button_restart" classname="test_board" file="/workspace/scratch/3cb51539194a/int8-dot-product/tests/test_board.py" lineno="27" time="1.8513216972351074" sim_time_ns="18060.0" ratio_time="9755.192750655955" />
+  </testsuite>
+</testsuites>

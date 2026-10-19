@@ -1,0 +1,69 @@
+Generated 64 deterministic ROM vectors and exact expected results.
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:93   in _embed_init_python              Using Python 3.12.4 interpreter at /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:79   in gpi_print_registered_impl       VPI registered
+     0.00ns INFO     cocotb                             Running on Icarus Verilog version 12.0 (stable)
+     0.00ns INFO     cocotb                             Seeding Python random module with supplied seed 20261018
+     0.00ns INFO     cocotb                             Initialized cocotb v2.0.0 from /root/.local/lib/python3.12/site-packages/cocotb
+     0.00ns INFO     cocotb.regression                  pytest not found, install it to enable better AssertionError messages
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_dot8.directed_signed_arithmetic (1/4)
+   410.00ns INFO     cocotb.regression                  test_dot8.directed_signed_arithmetic passed
+   410.00ns INFO     cocotb.regression                  running test_dot8.randomized_backpressure (2/4)
+235390.00ns INFO     cocotb.regression                  test_dot8.randomized_backpressure passed
+235390.00ns INFO     cocotb.regression                  running test_dot8.reset_discards_inflight_transactions (3/4)
+245740.00ns INFO     cocotb.regression                  test_dot8.reset_discards_inflight_transactions passed
+245740.00ns INFO     cocotb.regression                  running test_dot8.sustained_throughput_and_latency (4/4)
+256170.00ns INFO     cocotb.regression                  test_dot8.sustained_throughput_and_latency passed
+256170.00ns INFO     cocotb.regression                  ********************************************************************************************************
+                                                        ** TEST                                            STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        ********************************************************************************************************
+                                                        ** test_dot8.directed_signed_arithmetic             PASS         410.00           0.01      51090.78  **
+                                                        ** test_dot8.randomized_backpressure                PASS      234980.00           3.46      67870.08  **
+                                                        ** test_dot8.reset_discards_inflight_transactions   PASS       10350.00           0.14      74120.76  **
+                                                        ** test_dot8.sustained_throughput_and_latency       PASS       10430.00           0.15      69280.02  **
+                                                        ********************************************************************************************************
+                                                        ** TESTS=4 PASS=4 FAIL=0 SKIP=0                               256170.00           3.76      68058.57  **
+                                                        ********************************************************************************************************
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:93   in _embed_init_python              Using Python 3.12.4 interpreter at /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:79   in gpi_print_registered_impl       VPI registered
+     0.00ns INFO     cocotb                             Running on Icarus Verilog version 12.0 (stable)
+     0.00ns INFO     cocotb                             Seeding Python random module with supplied seed 20261018
+     0.00ns INFO     cocotb                             Initialized cocotb v2.0.0 from /root/.local/lib/python3.12/site-packages/cocotb
+     0.00ns INFO     cocotb.regression                  pytest not found, install it to enable better AssertionError messages
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_dot8.directed_signed_arithmetic (1/4)
+  2140.00ns INFO     cocotb.regression                  test_dot8.directed_signed_arithmetic passed
+  2140.00ns INFO     cocotb.regression                  running test_dot8.randomized_backpressure (2/4)
+1305290.00ns INFO     cocotb.regression                  test_dot8.randomized_backpressure passed
+1305290.00ns INFO     cocotb.regression                  running test_dot8.reset_discards_inflight_transactions (3/4)
+1360580.00ns INFO     cocotb.regression                  test_dot8.reset_discards_inflight_transactions passed
+1360580.00ns INFO     cocotb.regression                  running test_dot8.sustained_throughput_and_latency (4/4)
+1452900.00ns INFO     cocotb.regression                  test_dot8.sustained_throughput_and_latency passed
+1452900.00ns INFO     cocotb.regression                  ********************************************************************************************************
+                                                         ** TEST                                            STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                         ********************************************************************************************************
+                                                         ** test_dot8.directed_signed_arithmetic             PASS        2140.00           0.03      67481.72  **
+                                                         ** test_dot8.randomized_backpressure                PASS     1303150.00          16.28      80042.02  **
+                                                         ** test_dot8.reset_discards_inflight_transactions   PASS       55290.00           0.69      80523.46  **
+                                                         ** test_dot8.sustained_throughput_and_latency       PASS       92320.00           1.11      82801.71  **
+                                                         ********************************************************************************************************
+                                                         ** TESTS=4 PASS=4 FAIL=0 SKIP=0                              1452900.00          18.12      80188.45  **
+                                                         ********************************************************************************************************
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:93   in _embed_init_python              Using Python 3.12.4 interpreter at /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:79   in gpi_print_registered_impl       VPI registered
+     0.00ns INFO     cocotb                             Running on Icarus Verilog version 12.0 (stable)
+     0.00ns INFO     cocotb                             Seeding Python random module with supplied seed 20261018
+     0.00ns INFO     cocotb                             Initialized cocotb v2.0.0 from /root/.local/lib/python3.12/site-packages/cocotb
+     0.00ns INFO     cocotb.regression                  pytest not found, install it to enable better AssertionError messages
+     0.00ns INFO     cocotb                             Running tests
+     0.00ns INFO     cocotb.regression                  running test_selftest.complete_selftest_and_restart (1/1)
+  2000.00ns INFO     cocotb.regression                  test_selftest.complete_selftest_and_restart passed
+  2000.00ns INFO     cocotb.regression                  *****************************************************************************************************
+                                                        ** TEST                                         STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        *****************************************************************************************************
+                                                        ** test_selftest.complete_selftest_and_restart   PASS        2000.00           0.01     133463.92  **
+                                                        *****************************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0                              2000.00           0.02     125111.60  **
+                                                        *****************************************************************************************************
+     -.--ns INFO     gpi                                ..mbed/gpi_embed.cpp:93   in _embed_init_python              Using Python 3.12.4 interpreter at /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3
+     -.--ns INFO     gpi                                ../gpi/GpiCommon.cpp:79   in gpi_print_registered_impl       VPI registered

@@ -1,0 +1,56 @@
+{
+  "core": "serial",
+  "tests": [
+    {
+      "name": "directed_signed_arithmetic",
+      "passed": true,
+      "cycles": 214,
+      "accepted": 22,
+      "retired": 22,
+      "reset_flushed": 0,
+      "output_stall_cycles": 0,
+      "input_blocked_cycles": 168,
+      "vector_count": 22
+    },
+    {
+      "name": "randomized_backpressure",
+      "passed": true,
+      "cycles": 130315,
+      "accepted": 12288,
+      "retired": 12288,
+      "reset_flushed": 0,
+      "output_stall_cycles": 19681,
+      "input_blocked_cycles": 114873,
+      "seeds": [
+        42,
+        2026,
+        8675309
+      ],
+      "vector_count": 12288
+    },
+    {
+      "name": "reset_discards_inflight_transactions",
+      "passed": true,
+      "cycles": 5529,
+      "accepted": 514,
+      "retired": 512,
+      "reset_flushed": 2,
+      "output_stall_cycles": 850,
+      "input_blocked_cycles": 4808
+    },
+    {
+      "name": "sustained_throughput_and_latency",
+      "passed": true,
+      "cycles": 9232,
+      "accepted": 1024,
+      "retired": 1024,
+      "reset_flushed": 0,
+      "output_stall_cycles": 0,
+      "input_blocked_cycles": 8184,
+      "vector_count": 1024,
+      "initiation_interval_cycles": 9,
+      "transfer_latency_cycles": 9,
+      "sustained_results_per_cycle": 0.1111111111111111
+    }
+  ]
+}

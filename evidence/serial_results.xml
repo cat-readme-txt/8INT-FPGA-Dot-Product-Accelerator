@@ -1,0 +1,9 @@
+<testsuites name="results">
+  <testsuite name="all" package="all">
+    <property name="random_seed" value="20261018" />
+    <testcase name="directed_signed_arithmetic" classname="test_dot8" file="/workspace/scratch/3cb51539194a/int8-dot-product/tests/test_dot8.py" lineno="126" time="0.03171229362487793" sim_time_ns="2140.0" ratio_time="67481.71624903203" />
+    <testcase name="randomized_backpressure" classname="test_dot8" file="/workspace/scratch/3cb51539194a/int8-dot-product/tests/test_dot8.py" lineno="145" time="16.280824184417725" sim_time_ns="1303150.0" ratio_time="80042.01662267423" />
+    <testcase name="reset_discards_inflight_transactions" classname="test_dot8" file="/workspace/scratch/3cb51539194a/int8-dot-product/tests/test_dot8.py" lineno="159" time="0.6866321563720703" sim_time_ns="55290.0" ratio_time="80523.46440069668" />
+    <testcase name="sustained_throughput_and_latency" classname="test_dot8" file="/workspace/scratch/3cb51539194a/int8-dot-product/tests/test_dot8.py" lineno="184" time="1.114952802658081" sim_time_ns="92320.0" ratio_time="82801.71122930615" />
+  </testsuite>
+</testsuites>

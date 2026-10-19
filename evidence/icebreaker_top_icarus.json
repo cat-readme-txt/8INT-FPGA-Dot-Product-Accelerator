@@ -1,0 +1,13 @@
+{
+  "core": "board",
+  "tests": [
+    {
+      "name": "startup_and_button_restart",
+      "passed": true,
+      "completed_selftests": 2,
+      "vectors_per_run": 64,
+      "cycles_after_startup_wait": 68,
+      "cycles_after_button_release": 79
+    }
+  ]
+}

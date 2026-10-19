@@ -1,0 +1,43 @@
+{
+   "creator": "Yosys 0.33 (git sha1 2584903a060)",
+   "invocation": "stat -json ",
+   "modules": {
+      "\\dot8_pipeline": {
+         "num_wires":         69,
+         "num_wire_bits":     1206,
+         "num_pub_wires":     38,
+         "num_pub_wire_bits": 473,
+         "num_memories":      0,
+         "num_memory_bits":   0,
+         "num_processes":     0,
+         "num_cells":         141,
+         "num_cells_by_type": {
+            "CARRY4": 15,
+            "DSP48E1": 8,
+            "FDRE": 59,
+            "LUT2": 54,
+            "LUT3": 1,
+            "LUT4": 4
+         }
+      }
+   },
+      "design": {
+         "num_wires":         69,
+         "num_wire_bits":     1206,
+         "num_pub_wires":     38,
+         "num_pub_wire_bits": 473,
+         "num_memories":      0,
+         "num_memory_bits":   0,
+         "num_processes":     0,
+         "num_cells":         141,
+         "num_cells_by_type": {
+            "CARRY4": 15,
+            "DSP48E1": 8,
+            "FDRE": 59,
+            "LUT2": 54,
+            "LUT3": 1,
+            "LUT4": 4
+         }
+      }
+}
+

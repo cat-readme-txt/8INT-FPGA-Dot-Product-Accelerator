@@ -1,0 +1,12 @@
+{
+  "core": "selftest",
+  "tests": [
+    {
+      "name": "complete_selftest_and_restart",
+      "passed": true,
+      "runs": 2,
+      "vectors_per_run": 64,
+      "completion_cycles": 77
+    }
+  ]
+}

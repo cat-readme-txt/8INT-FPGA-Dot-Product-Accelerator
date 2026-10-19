@@ -1,0 +1,6 @@
+# iCEBreaker main board, iCE40UP5K-SG48, 12 MHz oscillator.
+# Pin source: https://github.com/YosysHQ/icestorm/blob/main/examples/icebreaker/icebreaker.pcf
+set_io clk 35
+set_io -pullup yes btn_n 10
+set_io led_red_n 11
+set_io led_green_n 37
