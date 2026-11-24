@@ -14,7 +14,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--core", choices=["all", "pipeline", "serial", "selftest", "board", "gate-board"], default="all")
+    parser.add_argument("--core", choices=["all", "pipeline", "serial", "selftest", "board", "urbana", "gate-board"], default="all")
     parser.add_argument("--waves", action="store_true")
     args = parser.parse_args()
     executable = "iverilog"
@@ -27,13 +27,14 @@ def main():
     subprocess.run([sys.executable, "scripts/generate_rom.py"], cwd=ROOT, check=True)
     reports = ROOT / "build/reports"
     reports.mkdir(parents=True, exist_ok=True)
-    jobs = ["pipeline", "serial", "selftest", "board"] if args.core == "all" else [args.core]
+    jobs = ["pipeline", "serial", "selftest", "board", "urbana"] if args.core == "all" else [args.core]
     for job in jobs:
-        top = "icebreaker_top" if job in ["board", "gate-board"] else f"dot8_{job}"
+        top = {"board": "icebreaker_top", "gate-board": "icebreaker_top",
+               "urbana": "urbana_top"}.get(job, f"dot8_{job}")
         sources = [ROOT / f"rtl/{top}.sv"]
-        if job in ["selftest", "board"]:
+        if job in ["selftest", "board", "urbana"]:
             sources.insert(0, ROOT / "rtl/dot8_pipeline.sv")
-        if job == "board":
+        if job in ["board", "urbana"]:
             sources.insert(1, ROOT / "rtl/dot8_selftest.sv")
         if job == "gate-board":
             netlist = ROOT / "build/icebreaker/netlist.v"
@@ -58,8 +59,11 @@ def main():
         build_args = ["-g2012"]
         runner.build(sources=sources, includes=[ROOT / "rtl"], hdl_toplevel=top,
                      build_dir=build, build_args=build_args, always=True,
-                     timescale=("1ns", "1ps"), waves=args.waves)
-        test_module = "test_board" if job in ["board", "gate-board"] else ("test_selftest" if job == "selftest" else "test_dot8")
+                     timescale=("1ns", "1ps"), waves=args.waves,
+                     parameters={"HEARTBEAT_BIT": 3} if job == "urbana" else {})
+        test_module = ("test_urbana" if job == "urbana" else
+                       "test_board" if job in ["board", "gate-board"] else
+                       "test_selftest" if job == "selftest" else "test_dot8")
         xml = runner.test(test_module=test_module,
                           hdl_toplevel=top, build_dir=build, test_dir=ROOT / "tests",
                           results_xml=str(build / "results.xml"), waves=args.waves,

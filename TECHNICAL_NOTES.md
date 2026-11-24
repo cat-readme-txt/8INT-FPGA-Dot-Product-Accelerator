@@ -79,9 +79,18 @@ maximum frequency is a static estimate from the routed design. It is not a
 measurement from a physical board and does not mean the board is clocked at
 that maximum frequency.
 
+The [Urbana implementation](URBANA_BRINGUP.md) targets a separate XC7S50-CSGA324-1
+Spartan-7 at its 100 MHz oscillator. Its XDC applies a 10 ns clock constraint.
+The Vivado batch build emits implementation reports and rejects negative worst
+setup or hold slack. No Urbana utilization, timing, or hardware result is
+claimed until that build and board run are performed.
+
 The two-register button synchronizer handles the asynchronous user input.
 It does not implement button debouncing. Holding reset through contact bounce
 restarts the short self-test; the core remains in one clock domain.
+The Urbana top uses the same approach for its active-high BTN0 and initializes
+a free-running counter for a visible LED heartbeat. Its active-high status LEDs
+show pass, mismatch, completion, and the final count of 64.
 
 ## Result scope and reproducibility
 

@@ -2,12 +2,12 @@
 
 An eight-lane signed INT8 dot-product engine written in synthesizable SystemVerilog.
 The repository includes a four-stage streaming pipeline, a one-multiplier serial
-baseline, and a ROM-driven self-test for the standard iCEBreaker board. The
-cocotb suite checks the RTL against a Python integer reference. Simulation and
-FPGA builds do not require hardware; the bitstream has **not** been tested on a
-physical board.
+baseline, and ROM-driven self-tests for the standard iCEBreaker and Real Digital
+Urbana boards. The cocotb suite checks the RTL against a Python integer
+reference. Simulation and FPGA builds do not require hardware; neither board
+implementation has been tested on a physical board yet.
 
-The [retained validation report](evidence/VALIDATION.md) records ten RTL tests,
+The [pre-Urbana validation report](evidence/VALIDATION.md) records ten RTL tests,
 one synthesized-netlist test, and 13,846 exact output matches per arithmetic
 core. The accompanying [tool versions](evidence/tool_versions.json) and
 [source hashes](evidence/source_hashes.json) identify the recorded run.
@@ -28,8 +28,8 @@ python -m pip install -r requirements.txt
 make test
 ```
 
-`make test` runs ten RTL tests: four per arithmetic core, one for the self-test,
-and one for the board top. The test runner exits with an error if any test
+`make test` runs eleven RTL tests: four per arithmetic core, one for the self-test,
+and one for each board top. The test runner exits with an error if any test
 fails. Per-test transaction counts are written to `build/reports/`.
 
 Then run the implementation flow:
@@ -42,8 +42,12 @@ make gate-test
 
 `make synth` reports resource use for the standalone cores mapped to Xilinx
 7-series primitives. `make icebreaker` builds the separate iCE40 board application
-through place-and-route. `make gate-test` runs the eleventh test on its mapped
+through place-and-route. `make gate-test` runs an additional test on its mapped
 netlist with the Yosys iCE40 primitive models. No command above programs a board.
+
+For a Real Digital Urbana, use the [Urbana build and bring-up guide](URBANA_BRINGUP.md).
+The separate `make urbana` target requires Vivado with Spartan-7 support and
+generates a `.bit` file plus routed timing, utilization, DRC, and I/O reports.
 
 ## Other platforms and tool installations
 
@@ -81,6 +85,9 @@ make gate-test
 | [`tests/test_dot8.py`](tests/test_dot8.py) | Arithmetic reference and transaction scoreboard |
 | [`rtl/dot8_selftest.sv`](rtl/dot8_selftest.sv) | ROM-driven self-test with deliberate output stalls |
 | [`rtl/icebreaker_top.sv`](rtl/icebreaker_top.sv) | Board startup reset and synchronized user button |
+| [`rtl/urbana_top.sv`](rtl/urbana_top.sv) | Urbana 100 MHz self-test, LEDs, and button restart |
+| [`constraints/urbana.xdc`](constraints/urbana.xdc) | Urbana clock, button, and LED pin assignments |
+| [`scripts/build_urbana.tcl`](scripts/build_urbana.tcl) | Vivado Spartan-7 implementation and report generation |
 | [`rtl/selftest_rom.svh`](rtl/selftest_rom.svh) | Generated test vectors with independent Python answers |
 | [`scripts/build_icebreaker.py`](scripts/build_icebreaker.py) | Full open-source FPGA implementation flow |
 | [`evidence/VALIDATION.md`](evidence/VALIDATION.md) | Retained tests, implementation results, and measurement limits |
@@ -109,7 +116,7 @@ determines whether their contents may be consumed.
 Latency here means the difference between the input-handshake edge and the
 output-handshake edge. Backpressure can extend wall-clock latency.
 
-## FPGA demonstration
+## iCEBreaker demonstration
 
 The included constraints target the **standard iCEBreaker iCE40UP5K-SG48** with
 its 12 MHz oscillator. They do not target iCEBreaker Bitsy or unrelated boards.
@@ -133,6 +140,15 @@ includes a negative-extreme arithmetic case and periodic output stalls.
 
 No connected-board test is recorded. The FPGA result comes from place-and-route
 and functional mapped-netlist simulation, without SDF delay annotation.
+
+## Urbana demonstration
+
+The [Urbana guide](URBANA_BRINGUP.md) covers GitHub transfer to a Debian Vivado
+VM, local simulation, 100 MHz routed implementation, bitstream transfer to a
+Mac, volatile USB/JTAG loading with openFPGALoader, and optional persistent
+flash programming. The Urbana design runs the same 64-vector self-test and
+exposes pass, fail, completion, checked count, and clock heartbeat on user LEDs.
+The physical board and Vivado build still need to be run.
 
 ## Extra commands
 

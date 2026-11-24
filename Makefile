@@ -1,5 +1,5 @@
 PYTHON ?= python3
-.PHONY: test lint synth icebreaker gate-test rom clean
+.PHONY: test lint synth icebreaker urbana gate-test rom clean
 
 test:
 	$(PYTHON) scripts/run_tests.py
@@ -13,6 +13,9 @@ synth:
 
 icebreaker:
 	$(PYTHON) scripts/build_icebreaker.py
+
+urbana:
+	vivado -mode batch -source scripts/build_urbana.tcl
 
 gate-test:
 	$(PYTHON) scripts/run_tests.py --core gate-board
