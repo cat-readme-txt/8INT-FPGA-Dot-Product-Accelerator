@@ -4,15 +4,19 @@ This guide builds the ROM self-test for the [Real Digital Urbana board](https://
 
 The board runs all 64 deterministic dot-product vectors, compares the 19-bit results with independently generated expected values, and latches the result. The test covers the arithmetic pipeline, its input and output handshakes, and deliberate output stalls. The ROM is a demonstration workload; no UART host interface is present.
 
+## Vivado in an Apple Silicon UTM VM
+
+Vivado 2025.2 is an x86-64 Linux application. [UTM's Rosetta support](https://docs.getutm.app/advanced/rosetta/) can run x86-64 Linux programs inside an ARM64 guest that uses the Apple Virtualization backend. In that configuration, `uname -m` still prints `aarch64`; this alone does not rule out a working Vivado installation. The build should use the same Vivado launcher or environment that has already worked in this VM.
+
+The stock Vivado shell launcher may reject `aarch64` before Rosetta reaches its x86-64 executable. If `make urbana` reports `Unsupported architecture: aarch64`, the repository's Tcl script has not run. Resolve the launcher in the VM first, then pass the working Vivado command to `make` using its `VIVADO` variable if the launcher accepts `-mode batch -source ...` arguments. Do not change the VM architecture or reinstall Vivado solely because of this message.
+
 ## 1. Get the source into the Debian VM
 
-The new Urbana files are local until committed and pushed. From this repository on the Mac, publish the reviewed changes so the VM can pull them:
+The original Urbana files are in commit `ee936a7`. The Rosetta build changes in this guide are currently local to the Mac checkout. After reviewing them, publish those changes so the VM can pull the updated script:
 
 ```bash
-git add Makefile README.md TECHNICAL_NOTES.md URBANA_BRINGUP.md \
-    constraints/urbana.xdc rtl/urbana_top.sv \
-    scripts/build_urbana.tcl scripts/run_tests.py tests/test_urbana.py
-git commit -m "Add Urbana Spartan-7 board self-test"
+git add Makefile README.md URBANA_BRINGUP.md scripts/build_urbana.tcl
+git commit -m "Adapt Urbana Vivado build to Rosetta"
 git push origin main
 ```
 
@@ -27,12 +31,13 @@ git log -1 --oneline
 
 If the repository is already cloned, use `git pull --ff-only` from its directory. Verify that `rtl/urbana_top.sv`, `constraints/urbana.xdc`, and `scripts/build_urbana.tcl` exist. The commit ID is useful when recording the test result.
 
-Vivado must include the Spartan-7 device family. `vivado -version` should work in the same terminal as the build. If it does not, source the Vivado installation's `settings64.sh` first, using its actual installation path, for example:
+Vivado must include the Spartan-7 device family. In this VM, Vivado 2025.2 is installed under `/home/qihan/amd/2025.2/Vivado`. Use the launcher or desktop entry that produced the HackMidwest bitstream successfully. Inspect the shell's candidates before changing `PATH`:
 
 ```bash
-source /path/to/Vivado/2025.1/settings64.sh
-vivado -version
+type -a vivado
 ```
+
+Putting the stock `Vivado/bin` directory at the front of `PATH` can bypass a working Rosetta wrapper and trigger `Unsupported architecture: aarch64`. Reuse the working launcher from the previous project. A setup script is optional when the proven launcher already configures the environment.
 
 ## 2. Run simulation in Debian
 
@@ -51,13 +56,17 @@ The expected result is 11 passing RTL tests, including `urbana_top` startup, clo
 
 ## 3. Build the Urbana bitstream in Vivado
 
-From the repository root, with Vivado on `PATH`:
+In the Debian repository, run `realpath scripts/build_urbana.tcl` to get the exact script path. Launch Vivado through the same method that successfully built HackMidwest. Close any open project, then enter this in Vivado's **Tcl Console**, using the path printed by `realpath`:
 
-```bash
-make urbana
+```tcl
+source /absolute/path/to/8INT-FPGA-Dot-Product-Accelerator/scripts/build_urbana.tcl
 ```
 
-This runs `vivado -mode batch -source scripts/build_urbana.tcl`. It creates a Vivado project for part `xc7s50csga324-1`, implements the top `urbana_top` with `constraints/urbana.xdc`, writes reports, and copies the bitstream to `build/urbana/urbana_top.bit`. It does not program the board. The run should end with `Urbana bitstream ready:` and nonnegative setup and hold slack.
+The script locates its RTL and constraints relative to its own path, so Vivado's current working directory does not matter. Start a fresh Vivado session before retrying after a failed or completed run.
+
+If the proven shell launcher accepts Vivado's `-mode batch -source` arguments, the equivalent terminal build from the repository root is `make urbana`. If the launcher has a different name or path, use `make VIVADO=/full/path/to/working/launcher urbana`. An `Unsupported architecture: aarch64` result from either command means that shell launcher still has not started the Tcl build; use the proven launch method above.
+
+The script follows the same in-process, non-project flow as the proven [HackMidwest Rosetta build](https://github.com/Trade42/HackMidwest/blob/fpga/fpga_board/vivado/build_rosetta.tcl): it synthesizes part `xc7s50csga324-1`, places and routes `urbana_top` with `constraints/urbana.xdc`, writes reports, and creates `build/urbana/urbana_top.bit`. It does not program the board. The run should end with `Urbana bitstream ready:` and nonnegative setup and hold slack. It does not launch separate Vivado child runs or write a routed checkpoint.
 
 The published Urbana constraint file and reference manual both assign the clock to N15. A [published prototype schematic](https://www.realdigital.org/downloads/064514e67fbab05a00650ce69af02486.pdf) labels the clock at P15 instead, so verify the revision of your board and use the heartbeat test below to confirm the clock pin on your hardware. Do not change the XDC pin by guesswork if the heartbeat stays dark.
 
