@@ -6,38 +6,38 @@ The board runs all 64 deterministic dot-product vectors, compares the 19-bit res
 
 ## Vivado in an Apple Silicon UTM VM
 
-Vivado 2025.2 is an x86-64 Linux application. [UTM's Rosetta support](https://docs.getutm.app/advanced/rosetta/) can run x86-64 Linux programs inside an ARM64 guest that uses the Apple Virtualization backend. In that configuration, `uname -m` still prints `aarch64`; this alone does not rule out a working Vivado installation. The build should use the same Vivado launcher or environment that has already worked in this VM.
+Vivado 2025.2 is an x86-64 Linux application. [UTM's Rosetta support](https://docs.getutm.app/advanced/rosetta/) can run x86-64 Linux programs inside an ARM64 guest that uses the Apple Virtualization backend. In that configuration, `uname -m` still prints `aarch64`; this alone does not rule out a working Vivado installation. This VM has already built the HackMidwest Urbana design using Rosetta, Bubblewrap, CPU-reporting shims, and a Java subprocess setting.
 
-The stock Vivado shell launcher may reject `aarch64` before Rosetta reaches its x86-64 executable. If `make urbana` reports `Unsupported architecture: aarch64`, the repository's Tcl script has not run. Resolve the launcher in the VM first, then pass the working Vivado command to `make` using its `VIVADO` variable if the launcher accepts `-mode batch -source ...` arguments. Do not change the VM architecture or reinstall Vivado solely because of this message.
+The stock `vivado` launcher may reject `aarch64` before the Tcl script runs. Use `make urbana-rosetta` below; it applies the compatibility steps from the working HackMidwest batch build. `make urbana` remains available for systems with a native or separately configured Vivado launcher.
 
 ## 1. Get the source into the Debian VM
 
-The original Urbana files are in commit `ee936a7`. The Rosetta build changes in this guide are currently local to the Mac checkout. After reviewing them, publish those changes so the VM can pull the updated script:
+The in-process Urbana Tcl build is already in commit `dc887d3`. The new Bubblewrap launcher and guide changes are currently local to the Mac checkout. After reviewing them, publish those changes so the VM can pull the launcher:
 
 ```bash
-git add Makefile README.md URBANA_BRINGUP.md scripts/build_urbana.tcl
-git commit -m "Adapt Urbana Vivado build to Rosetta"
+git add Makefile README.md URBANA_BRINGUP.md scripts/build_urbana_rosetta.sh
+git commit -m "Add Rosetta launcher for Urbana Vivado build"
 git push origin main
 ```
 
-Then open a terminal in the VM:
+Then open a terminal in the existing Debian checkout:
 
 ```bash
-git clone https://github.com/cat-readme-txt/8INT-FPGA-Dot-Product-Accelerator.git
-cd 8INT-FPGA-Dot-Product-Accelerator
+cd ~/Projects/8INT-FPGA-Dot-Product-Accelerator
 git pull --ff-only
 git log -1 --oneline
 ```
 
-If the repository is already cloned, use `git pull --ff-only` from its directory. Verify that `rtl/urbana_top.sv`, `constraints/urbana.xdc`, and `scripts/build_urbana.tcl` exist. The commit ID is useful when recording the test result.
+Verify that `rtl/urbana_top.sv`, `constraints/urbana.xdc`, `scripts/build_urbana.tcl`, and `scripts/build_urbana_rosetta.sh` exist. The commit ID is useful when recording the test result.
 
-Vivado must include the Spartan-7 device family. In this VM, Vivado 2025.2 is installed under `/home/qihan/amd/2025.2/Vivado`. Use the launcher or desktop entry that produced the HackMidwest bitstream successfully. Inspect the shell's candidates before changing `PATH`:
+Vivado must include the Spartan-7 device family. In this VM, Vivado 2025.2 is installed under `/home/qihan/amd/2025.2/Vivado`. The Rosetta target expects the existing executable shims at `~/vivado-compat/{uname,arch,lscpu}`, Bubblewrap (`bwrap`), and the working `vivado` command. Inspect them before building:
 
 ```bash
-type -a vivado
+command -v bwrap vivado
+ls -l ~/vivado-compat/{uname,arch,lscpu}
 ```
 
-Putting the stock `Vivado/bin` directory at the front of `PATH` can bypass a working Rosetta wrapper and trigger `Unsupported architecture: aarch64`. Reuse the working launcher from the previous project. A setup script is optional when the proven launcher already configures the environment.
+The target prepends `~/vivado-compat` to `PATH`, makes its `lscpu` replacement visible at `/usr/bin/lscpu` inside Bubblewrap, sets `JAVA_TOOL_OPTIONS` to select Java's `FORK` process launcher, and sets the locale to `C`. Rosetta and the VM's installed amd64 libraries still provide the execution environment. It does not change the VM architecture.
 
 ## 2. Run simulation in Debian
 
@@ -56,15 +56,13 @@ The expected result is 11 passing RTL tests, including `urbana_top` startup, clo
 
 ## 3. Build the Urbana bitstream in Vivado
 
-In the Debian repository, run `realpath scripts/build_urbana.tcl` to get the exact script path. Launch Vivado through the same method that successfully built HackMidwest. Close any open project, then enter this in Vivado's **Tcl Console**, using the path printed by `realpath`:
+From the **Debian Bash prompt**, in the repository root, run:
 
-```tcl
-source /absolute/path/to/8INT-FPGA-Dot-Product-Accelerator/scripts/build_urbana.tcl
+```bash
+make urbana-rosetta
 ```
 
-The script locates its RTL and constraints relative to its own path, so Vivado's current working directory does not matter. Start a fresh Vivado session before retrying after a failed or completed run.
-
-If the proven shell launcher accepts Vivado's `-mode batch -source` arguments, the equivalent terminal build from the repository root is `make urbana`. If the launcher has a different name or path, use `make VIVADO=/full/path/to/working/launcher urbana`. An `Unsupported architecture: aarch64` result from either command means that shell launcher still has not started the Tcl build; use the proven launch method above.
+If `vivado` is not on `PATH`, provide the executable that worked for HackMidwest: `VIVADO_BIN=/absolute/path/to/vivado make urbana-rosetta`. This target invokes Vivado with `-mode batch -source scripts/build_urbana.tcl` through Bubblewrap and writes its log and journal under `build/urbana`. Do not run `source scripts/build_urbana.tcl` at the Bash prompt: `source` would make Bash interpret Vivado Tcl commands. If using the Vivado GUI instead, enter `source /home/qihan/Projects/8INT-FPGA-Dot-Product-Accelerator/scripts/build_urbana.tcl` in **Vivado's Tcl Console** with no project open.
 
 The script follows the same in-process, non-project flow as the proven [HackMidwest Rosetta build](https://github.com/Trade42/HackMidwest/blob/fpga/fpga_board/vivado/build_rosetta.tcl): it synthesizes part `xc7s50csga324-1`, places and routes `urbana_top` with `constraints/urbana.xdc`, writes reports, and creates `build/urbana/urbana_top.bit`. It does not program the board. The run should end with `Urbana bitstream ready:` and nonnegative setup and hold slack. It does not launch separate Vivado child runs or write a routed checkpoint.
 
@@ -74,32 +72,33 @@ Before transfer, inspect `build/urbana/timing_summary.rpt` for zero failing endp
 
 ## 4. Transfer to the Mac and load volatile configuration
 
-Transfer `build/urbana/urbana_top.bit` to the Mac through a UTM shared directory, `scp`, or another file transfer. For example, if SSH is enabled in Debian and reachable from the Mac:
+The working VM has a VirtioFS share at `/mnt/utm/UTMShared`, corresponding to `~/UTMShared` on the Mac. In Debian, after the build:
 
 ```bash
-scp user@vm-host:/path/to/repo/build/urbana/urbana_top.bit ~/Downloads/
-shasum -a 256 ~/Downloads/urbana_top.bit
+cp build/urbana/urbana_top.bit /mnt/utm/UTMShared/urbana_top.bit
+sha256sum build/urbana/urbana_top.bit /mnt/utm/UTMShared/urbana_top.bit
 ```
 
-Run `sha256sum build/urbana/urbana_top.bit` in Debian and compare the result. Use the board's **main/programming micro-USB** port with a data-capable cable. Set power jumper J16 to `USB` if this cable supplies power. Leave programming jumper J14 **unloaded** for JTAG mode. The Mac must own the USB device; disconnect it from UTM USB passthrough if the VM captured it. The board's power indicators and green INIT indicator should be on before loading.
+The two hashes should match. On the Mac, run `shasum -a 256 ~/UTMShared/urbana_top.bit` to check the shared copy again. If the share is not mounted, use the UTM VirtioFS share setup from the working HackMidwest workflow or transfer the `.bit` by another method. Use the board's **main/programming micro-USB** port with a data-capable cable. Set power jumper J16 to `USB` if this cable supplies power. Leave programming jumper J14 **unloaded** for JTAG mode. The Mac owns the USB connection in this setup. The board's power indicators and green INIT indicator should be on before loading.
 
-On the Mac, install [openFPGALoader](https://trabucayre.github.io/openFPGALoader/guide/first-steps.html) if needed, then detect the FPGA before attempting to load:
+On the Mac, install [openFPGALoader](https://trabucayre.github.io/openFPGALoader/guide/first-steps.html) if needed. The working HackMidwest load on this Urbana used the `arty_s7_50` profile. Reuse that proven command for volatile configuration, changing only the bitstream filename:
 
 ```bash
 brew install openfpgaloader
-openFPGALoader --scan-usb
-openFPGALoader -c ft2232 --ftdi-channel 0 --detect
+openFPGALoader -b arty_s7_50 ~/UTMShared/urbana_top.bit
 ```
 
-The Urbana has an FT2232H USB interface with JTAG on channel A. `openFPGALoader` does not list an `urbana` board profile, so use the cable directly. Confirm that detection reports the XC7S50 before running:
+That profile is a verified workaround for this particular Urbana programming setup, not an Urbana-specific board definition. If it fails to detect the board, inspect the USB interface and XC7S50 before retrying with explicit FT2232 channel A settings:
 
 ```bash
-openFPGALoader -c ft2232 --ftdi-channel 0 --fpga-part xc7s50csga324 ~/Downloads/urbana_top.bit
+openFPGALoader --scan-usb
+openFPGALoader -c ft2232 --ftdi-channel 0 --detect
+openFPGALoader -c ft2232 --ftdi-channel 0 --fpga-part xc7s50csga324 ~/UTMShared/urbana_top.bit
 ```
 
-This loads FPGA configuration memory only. It is lost on power-off or when `PROG` is pressed. `--fpga-part` supplies the part for this board without a built-in loader profile. If detection fails, check the cable, J14/J16, UTM USB ownership, and whether another program holds the FTDI interface. Do not use another board's `-b` profile solely because it has the same FPGA package.
+These commands load FPGA configuration memory only. It is lost on power-off or when `PROG` is pressed. `--fpga-part` supplies the part for the direct-cable route. If detection fails, check the cable, J14/J16, and whether another program holds the FTDI interface.
 
-If openFPGALoader cannot detect the FTDI/JTAG interface, attach the Urbana USB device to the Debian VM through UTM, open Vivado Hardware Manager, choose **Open Target → Autoconnect**, and use **Program Device** with `build/urbana/urbana_top.bit`. The board manual documents this path. Disconnect the USB device from the Mac's loader before handing it to the VM.
+The recorded macOS 26.6.2 Apple Virtualization VM did not have a working USB passthrough route for the board, so use the Mac for JTAG programming in this setup.
 
 ## 5. Read the board result
 
@@ -120,7 +119,7 @@ Record a short video or photos of the pass state and button restart, plus the co
 
 ## 6. Optional persistent flash configuration
 
-Only after the volatile load and restart test pass, use the board's QSPI configuration flash if persistent startup is desired. Attach the board's USB device to the Debian VM through UTM for this Vivado step. The board manual identifies a Micron `mt25ql128-spi-x1_x2_x4` configuration device. In Vivado Hardware Manager, add that configuration memory device, generate an MCS file from the **same tested** `.bit` at address 0, and program and verify the device. The [Urbana reference manual](https://www.realdigital.org/doc/496fed57c6b275735fe24c85de5718c2) gives the GUI sequence. Move J14 to the loaded position and power-cycle; DONE should light and the same LED pass pattern should return without JTAG loading.
+Only after the volatile load and restart test pass, use the board's QSPI configuration flash if persistent startup is desired. The board manual identifies a Micron `mt25ql128-spi-x1_x2_x4` configuration device and gives the [Vivado Hardware Manager sequence](https://www.realdigital.org/doc/496fed57c6b275735fe24c85de5718c2). That sequence needs access to the board's USB/JTAG interface; the current VM setup does not provide a proven passthrough route. Use a separately verified flash programmer setup before attempting this optional step. After programming and verifying the flash, move J14 to the loaded position and power-cycle; DONE and the same LED pass pattern should return without JTAG loading.
 
 This step overwrites the current flash image. Preserve any existing image first if it matters. Do not treat a successful JTAG load as evidence that flash startup works; test the power-cycle separately. `openFPGALoader -f` is not the documented Urbana flash procedure, and this repository has no Urbana-specific flash profile.
 

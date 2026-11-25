@@ -46,9 +46,9 @@ through place-and-route. `make gate-test` runs an additional test on its mapped
 netlist with the Yosys iCE40 primitive models. No command above programs a board.
 
 For a Real Digital Urbana, use the [Urbana build and bring-up guide](URBANA_BRINGUP.md).
-The separate `make urbana` target requires Vivado with Spartan-7 support and
-generates a `.bit` file plus routed timing, utilization, DRC, and I/O reports.
-The same Tcl script can run from a working Vivado GUI session in a Rosetta VM.
+`make urbana-rosetta` reproduces the Debian UTM compatibility setup; `make urbana`
+uses a directly runnable Vivado launcher. Both generate a `.bit` file plus routed
+timing, utilization, DRC, and I/O reports with Spartan-7 support.
 
 ## Other platforms and tool installations
 
@@ -89,6 +89,7 @@ make gate-test
 | [`rtl/urbana_top.sv`](rtl/urbana_top.sv) | Urbana 100 MHz self-test, LEDs, and button restart |
 | [`constraints/urbana.xdc`](constraints/urbana.xdc) | Urbana clock, button, and LED pin assignments |
 | [`scripts/build_urbana.tcl`](scripts/build_urbana.tcl) | In-process Vivado Spartan-7 implementation and report generation |
+| [`scripts/build_urbana_rosetta.sh`](scripts/build_urbana_rosetta.sh) | Debian UTM Rosetta and Bubblewrap launch wrapper |
 | [`rtl/selftest_rom.svh`](rtl/selftest_rom.svh) | Generated test vectors with independent Python answers |
 | [`scripts/build_icebreaker.py`](scripts/build_icebreaker.py) | Full open-source FPGA implementation flow |
 | [`evidence/VALIDATION.md`](evidence/VALIDATION.md) | Retained tests, implementation results, and measurement limits |

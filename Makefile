@@ -1,6 +1,6 @@
 PYTHON ?= python3
 VIVADO ?= vivado
-.PHONY: test lint synth icebreaker urbana gate-test rom clean
+.PHONY: test lint synth icebreaker urbana urbana-rosetta gate-test rom clean
 
 test:
 	$(PYTHON) scripts/run_tests.py
@@ -17,6 +17,9 @@ icebreaker:
 
 urbana:
 	$(VIVADO) -mode batch -source scripts/build_urbana.tcl
+
+urbana-rosetta:
+	bash scripts/build_urbana_rosetta.sh
 
 gate-test:
 	$(PYTHON) scripts/run_tests.py --core gate-board
